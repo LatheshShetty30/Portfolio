@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lathesh Shetty — VR Developer</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #080b10;
+    --surface: #0e1320;
+    --border: rgba(0,220,180,0.12);
+    --accent: #00dca0;
+    --accent2: #00a3ff;
+    --accent3: #ff4d6e;
+    --text: #d4e0ee;
+    --muted: #5a6a80;
+    --card: #111827;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* ── GRID OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,220,160,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,220,160,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 48px;
+    background: rgba(8,11,16,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 3px;
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 36px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+
+  .nav-links a:hover { color: var(--accent); }
+
+  /* ── HERO ── */
+  #hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 120px 48px 80px;
+    overflow: hidden;
+    z-index: 1;
+  }
+
+  .hero-bg-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(120px);
+    pointer-events: none;
+  }
+
+  .orb1 {
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(0,220,160,0.12), transparent 70%);
+    top: -100px; right: -100px;
+    animation: drift 10s ease-in-out infinite alternate;
+  }
+
+  .orb2 {
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(0,163,255,0.10), transparent 70%);
+    bottom: 0; left: 10%;
+    animation: drift 14s ease-in-out infinite alternate-reverse;
+  }
+
+  @keyframes drift {
+    from { transform: translate(0,0); }
+    to { transform: translate(30px, 30px); }
+  }
+
+  .hero-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 4px;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    opacity: 0;
+    animation: fadeUp 0.6s 0.2s forwards;
+  }
+
+  .hero-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(72px, 10vw, 140px);
+    line-height: 0.9;
+    letter-spacing: 4px;
+    color: #fff;
+    margin-bottom: 28px;
+    opacity: 0;
+    animation: fadeUp 0.7s 0.4s forwards;
+  }
+
+  .hero-name span {
+    color: var(--accent);
+    display: block;
+  }
+
+  .hero-tagline {
+    max-width: 540px;
+    font-size: 16px;
+    color: var(--muted);
+    line-height: 1.8;
+    margin-bottom: 48px;
+    opacity: 0;
+    animation: fadeUp 0.7s 0.6s forwards;
+  }
+
+  .hero-cta {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    opacity: 0;
+    animation: fadeUp 0.7s 0.8s forwards;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 28px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s;
+    z-index: -1;
+  }
+
+  .btn:hover { color: #000; }
+  .btn:hover::before { transform: scaleX(1); }
+
+  .btn-ghost {
+    border-color: var(--border);
+    color: var(--muted);
+  }
+
+  .btn-ghost:hover { color: var(--text); }
+  .btn-ghost::before { background: rgba(255,255,255,0.05); }
+  .btn-ghost:hover::before { transform: scaleX(1); }
+
+  .hero-stats {
+    position: absolute;
+    right: 48px;
+    bottom: 80px;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    opacity: 0;
+    animation: fadeUp 0.7s 1s forwards;
+  }
+
+  .stat {
+    text-align: right;
+    border-right: 2px solid var(--accent);
+    padding-right: 20px;
+  }
+
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 40px;
+    color: #fff;
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── SECTION COMMON ── */
+  section {
+    position: relative;
+    z-index: 1;
+    padding: 100px 48px;
+  }
+
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 4px;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(42px, 5vw, 70px);
+    color: #fff;
+    line-height: 1;
+    margin-bottom: 60px;
+    letter-spacing: 2px;
+  }
+
+  /* ── ABOUT ── */
+  #about {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: start;
+    border-top: 1px solid var(--border);
+  }
+
+  .about-content p {
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.9;
+    margin-bottom: 20px;
+  }
+
+  .about-content p strong {
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  .skills-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .skill-chip {
+    padding: 10px 16px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--text);
+    letter-spacing: 1px;
+    transition: border-color 0.3s, color 0.3s;
+  }
+
+  .skill-chip:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* ── PROJECTS ── */
+  #projects { border-top: 1px solid var(--border); }
+
+  .nda-notice {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 20px;
+    border: 1px solid rgba(255,77,110,0.3);
+    background: rgba(255,77,110,0.05);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    color: var(--accent3);
+    margin-bottom: 48px;
+  }
+
+  .nda-dot {
+    width: 6px; height: 6px;
+    background: var(--accent3);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 2px;
+  }
+
+  .project-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    padding: 40px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s, transform 0.3s;
+    cursor: default;
+  }
+
+  .project-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px;
+    height: 0;
+    background: var(--accent);
+    transition: height 0.4s;
+  }
+
+  .project-card:hover { border-color: rgba(0,220,160,0.3); transform: translateY(-4px); }
+  .project-card:hover::before { height: 100%; }
+
+  .project-index {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 60px;
+    color: rgba(255,255,255,0.04);
+    line-height: 1;
+    position: absolute;
+    top: 20px; right: 30px;
+  }
+
+  .project-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+
+  .tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border: 1px solid var(--border);
+    color: var(--muted);
+  }
+
+  .tag-accent { border-color: rgba(0,220,160,0.3); color: var(--accent); }
+  .tag-blue { border-color: rgba(0,163,255,0.3); color: var(--accent2); }
+
+  .project-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 2px;
+    color: #fff;
+    margin-bottom: 12px;
+  }
+
+  .project-org {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 1px;
+    margin-bottom: 16px;
+  }
+
+  .project-desc {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.8;
+    margin-bottom: 28px;
+  }
+
+  .project-highlights {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .project-highlights li {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    padding-left: 16px;
+    position: relative;
+    line-height: 1.6;
+  }
+
+  .project-highlights li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+  }
+
+  .nda-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 24px;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--accent3);
+    text-transform: uppercase;
+    opacity: 0.7;
+  }
+
+  /* ── EXPERIENCE ── */
+  #experience { border-top: 1px solid var(--border); }
+
+  .timeline {
+    position: relative;
+    padding-left: 32px;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 1px;
+    background: linear-gradient(to bottom, var(--accent), transparent);
+  }
+
+  .timeline-item {
+    position: relative;
+    padding-bottom: 64px;
+    opacity: 0;
+    transform: translateX(-20px);
+    transition: opacity 0.5s, transform 0.5s;
+  }
+
+  .timeline-item.visible { opacity: 1; transform: translateX(0); }
+
+  .timeline-dot {
+    position: absolute;
+    left: -38px; top: 6px;
+    width: 12px; height: 12px;
+    border: 2px solid var(--accent);
+    background: var(--bg);
+    border-radius: 50%;
+  }
+
+  .timeline-dot::after {
+    content: '';
+    position: absolute;
+    inset: 2px;
+    background: var(--accent);
+    border-radius: 50%;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .timeline-item:hover .timeline-dot::after { opacity: 1; }
+
+  .timeline-date {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--accent);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+  }
+
+  .timeline-role {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 2px;
+    color: #fff;
+    margin-bottom: 4px;
+  }
+
+  .timeline-company {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 20px;
+  }
+
+  .timeline-bullets {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .timeline-bullets li {
+    font-size: 14px;
+    color: var(--muted);
+    padding-left: 20px;
+    position: relative;
+    line-height: 1.7;
+  }
+
+  .timeline-bullets li::before {
+    content: '▸';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-size: 11px;
+    top: 3px;
+  }
+
+  /* ── CONTACT ── */
+  #contact {
+    border-top: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+
+  .contact-heading {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(52px, 6vw, 90px);
+    line-height: 0.95;
+    color: #fff;
+    letter-spacing: 3px;
+  }
+
+  .contact-heading em {
+    color: var(--accent);
+    font-style: normal;
+    display: block;
+  }
+
+  .contact-links {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .contact-link {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 24px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    text-decoration: none;
+    transition: border-color 0.3s, background 0.3s;
+    group: true;
+  }
+
+  .contact-link:hover {
+    border-color: var(--accent);
+    background: rgba(0,220,160,0.03);
+  }
+
+  .contact-link-icon {
+    font-size: 18px;
+    width: 40px;
+    text-align: center;
+  }
+
+  .contact-link-info { flex: 1; }
+
+  .contact-link-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 3px;
+    color: var(--muted);
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .contact-link-value {
+    font-size: 14px;
+    color: var(--text);
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    position: relative;
+    z-index: 1;
+    border-top: 1px solid var(--border);
+    padding: 32px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  footer span {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    nav { padding: 16px 24px; }
+    .nav-links { display: none; }
+    section { padding: 60px 24px; }
+    #hero { padding: 100px 24px 60px; }
+    .hero-stats { display: none; }
+    #about, #contact { grid-template-columns: 1fr; gap: 40px; }
+    footer { flex-direction: column; gap: 12px; text-align: center; }
+  }
+
+  /* ── SCROLL REVEAL ── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s, transform 0.6s;
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#">LS</a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg-orb orb1"></div>
+  <div class="hero-bg-orb orb2"></div>
+
+  <p class="hero-eyebrow">// VR Developer & Software Engineer</p>
+
+  <h1 class="hero-name">
+    Lathesh
+    <span>Shetty</span>
+  </h1>
+
+  <p class="hero-tagline">
+    Building immersive virtual reality experiences that transform how people learn, train, and interact — from naval simulations to educational platforms.
+  </p>
+
+  <div class="hero-cta">
+    <a href="#projects" class="btn">View Projects</a>
+    <a href="#contact" class="btn btn-ghost">Get in Touch</a>
+  </div>
+
+  <div class="hero-stats">
+    <div class="stat">
+      <div class="stat-num">3+</div>
+      <div class="stat-label">Years in VR</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">5+</div>
+      <div class="stat-label">VR Platforms</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">10+</div>
+      <div class="stat-label">Projects</div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-content">
+    <p class="section-label">// About</p>
+    <h2 class="section-title">Who I Am</h2>
+    <p>
+      I'm a VR Developer based in <strong>Bengaluru, India</strong>, specialising in creating immersive virtual reality training solutions that bridge the gap between complex subjects and intuitive, engaging experiences.
+    </p>
+    <p>
+      My work spans <strong>educational simulations, multiplayer VR environments, and real-time streaming platforms</strong>. I've collaborated with institutions like IISc, the Ministry of Education, and naval organisations to build VR systems that measurably improve knowledge retention and reduce training time.
+    </p>
+    <p>
+      I hold certifications from <strong>Unity, GameDev.tv, Harvard (CS50x)</strong>, and Udemy — and I'm constantly expanding my technical toolkit to stay ahead in the fast-evolving XR landscape.
+    </p>
+  </div>
+
+  <div>
+    <p class="section-label" style="margin-bottom:24px;">// Tech Stack</p>
+    <div class="skills-grid">
+      <div class="skill-chip">Unity Engine</div>
+      <div class="skill-chip">Unreal Engine 4/5</div>
+      <div class="skill-chip">C# / C++</div>
+      <div class="skill-chip">Python</div>
+      <div class="skill-chip">Cardboard XR</div>
+      <div class="skill-chip">OpenXR</div>
+      <div class="skill-chip">Photon (PUN)</div>
+      <div class="skill-chip">WebRTC</div>
+      <div class="skill-chip">Figma / UI-UX</div>
+      <div class="skill-chip">PCVR</div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <p class="section-label">// Selected Work</p>
+  <h2 class="section-title">Projects</h2>
+
+  <div class="nda-notice">
+    <div class="nda-dot"></div>
+    All projects are under active Non-Disclosure Agreements — details shared reflect publicly available context only.
+  </div>
+
+  <div class="projects-grid">
+
+    <!-- Project 1 -->
+    <div class="project-card reveal">
+      <div class="project-index">01</div>
+      <div class="project-tags">
+        <span class="tag tag-accent">Unity</span>
+        <span class="tag tag-blue">Multiplayer</span>
+        <span class="tag">Photon PUN</span>
+        <span class="tag">WebRTC</span>
+      </div>
+      <h3 class="project-title">Collaborative VR Training Platform</h3>
+      <p class="project-org">ModeliCon InfoTech · IISc & Ministry of Education</p>
+      <p class="project-desc">
+        A networked VR training environment enabling up to 10 users to collaborate in real-time. Built with Photon Unity Networking and a local WebRTC streaming layer for live session monitoring.
+      </p>
+      <ul class="project-highlights">
+        <li>90% success rate in seamless real-time multi-user connectivity</li>
+        <li>25% improvement in user engagement via Figma-driven UI/UX redesign</li>
+        <li>50% reduction in authentication time through custom auth integration</li>
+        <li>Live VR session capture and transmission via WebRTC protocols</li>
+      </ul>
+      <div class="nda-badge">
+        🔒 NDA Protected
+      </div>
+    </div>
+
+    <!-- Project 2 -->
+    <div class="project-card reveal">
+      <div class="project-index">02</div>
+      <div class="project-tags">
+        <span class="tag tag-accent">PCVR</span>
+        <span class="tag tag-blue">OpenXR</span>
+        <span class="tag">Naval Training</span>
+        <span class="tag">QA</span>
+      </div>
+      <h3 class="project-title">Naval Officer Training Simulation</h3>
+      <p class="project-org">Sunlux Technovations</p>
+      <p class="project-desc">
+        Realistic VR training modules for naval officers, developed in close collaboration with subject matter experts to align with official naval training protocols and objectives.
+      </p>
+      <ul class="project-highlights">
+        <li>25% increase in knowledge retention over traditional training methods</li>
+        <li>90% alignment with naval training protocols</li>
+        <li>25% reduction in overall training time</li>
+        <li>99% bug-free rate through extensive testing and QA cycles</li>
+      </ul>
+      <div class="nda-badge">
+        🔒 NDA Protected
+      </div>
+    </div>
+
+    <!-- Project 3 -->
+    <div class="project-card reveal">
+      <div class="project-index">03</div>
+      <div class="project-tags">
+        <span class="tag tag-accent">Unreal Engine</span>
+        <span class="tag">Research</span>
+        <span class="tag tag-blue">Education</span>
+      </div>
+      <h3 class="project-title">Immersive VR Research Experiences</h3>
+      <p class="project-org">National Institute of Technology Karnataka</p>
+      <p class="project-desc">
+        Led a team of 5 engineering students to design and deploy two independent VR applications using Unreal Engine, focused on immersive educational and scientific environments.
+      </p>
+      <ul class="project-highlights">
+        <li>30% increase in user retention across deployed applications</li>
+        <li>Mentored 30 students as Teaching Assistant for Virtual Instrumentation</li>
+        <li>Guided 5 advanced student projects to completion</li>
+        <li>Contributed to Ministry of Education virtual labs initiative</li>
+      </ul>
+      <div class="nda-badge">
+        🔒 NDA Protected
+      </div>
+    </div>
+
+    <!-- Project 4 -->
+    <div class="project-card reveal">
+      <div class="project-index">04</div>
+      <div class="project-tags">
+        <span class="tag tag-accent">Cardboard XR</span>
+        <span class="tag">Unity</span>
+        <span class="tag tag-blue">Samriddhi</span>
+        <span class="tag">EdTech</span>
+      </div>
+      <h3 class="project-title">Accessible VR Learning — Cardboard XR</h3>
+      <p class="project-org">ModeliCon InfoTech · Samriddhi Partnership</p>
+      <p class="project-desc">
+        Designed and developed VR learning experiences optimised for Google Cardboard XR — making high-quality immersive education accessible on low-cost hardware for broader reach.
+      </p>
+      <ul class="project-highlights">
+        <li>Partnered with Samriddhi and Ministry of Education on curriculum alignment</li>
+        <li>Streamlined navigation patterns improving engagement by 25%</li>
+        <li>Scalable architecture supporting diverse hardware profiles</li>
+        <li>User auth system with 20% satisfaction improvement post-launch</li>
+      </ul>
+      <div class="nda-badge">
+        🔒 NDA Protected
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <p class="section-label">// Career</p>
+  <h2 class="section-title">Experience</h2>
+
+  <div class="timeline">
+
+    <div class="timeline-item reveal">
+      <div class="timeline-dot"></div>
+      <div class="timeline-date">July 2023 — Present</div>
+      <div class="timeline-role">Virtual Reality Developer</div>
+      <div class="timeline-company">ModeliCon InfoTech · Bengaluru</div>
+      <ul class="timeline-bullets">
+        <li>Developed cutting-edge VR training experiences with IISc, Ministry of Education, and Samriddhi using Cardboard XR and Unity.</li>
+        <li>Built multiplayer VR with Photon PUN supporting 10 simultaneous users at 90% connectivity success rate.</li>
+        <li>Engineered a local WebRTC streaming platform for live VR session monitoring.</li>
+      </ul>
+    </div>
+
+    <div class="timeline-item reveal">
+      <div class="timeline-dot"></div>
+      <div class="timeline-date">Feb 2023 — Aug 2024</div>
+      <div class="timeline-role">Software Engineer</div>
+      <div class="timeline-company">Sunlux Technovations · Bengaluru</div>
+      <ul class="timeline-bullets">
+        <li>Created PCVR training platforms for naval officer education, achieving 25% improvement in knowledge retention.</li>
+        <li>Ensured cross-platform hardware compatibility via OpenXR integration.</li>
+        <li>Delivered 99% bug-free rate through rigorous QA and testing processes.</li>
+      </ul>
+    </div>
+
+    <div class="timeline-item reveal">
+      <div class="timeline-dot"></div>
+      <div class="timeline-date">Jan 2021 — Feb 2023</div>
+      <div class="timeline-role">Junior Research Fellow</div>
+      <div class="timeline-company">National Institute of Technology Karnataka · Mangalore</div>
+      <ul class="timeline-bullets">
+        <li>Led team of 5 to deliver 2 VR projects with Unreal Engine, boosting user retention by 30%.</li>
+        <li>Mentored 30 students as Teaching Assistant for Open Source Virtual Instrumentation.</li>
+        <li>Contributed to Ministry of Education virtual labs front-end development.</li>
+      </ul>
+    </div>
+
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div>
+    <p class="section-label">// Contact</p>
+    <h2 class="contact-heading">
+      Let's Build
+      <em>Something</em>
+      Immersive.
+    </h2>
+  </div>
+
+  <div class="contact-links reveal">
+    <a href="mailto:lathesh780@gmail.com" class="contact-link">
+      <div class="contact-link-icon">✉</div>
+      <div class="contact-link-info">
+        <span class="contact-link-label">Email</span>
+        <span class="contact-link-value">lathesh780@gmail.com</span>
+      </div>
+    </a>
+    <a href="tel:+918861528148" class="contact-link">
+      <div class="contact-link-icon">✆</div>
+      <div class="contact-link-info">
+        <span class="contact-link-label">Phone</span>
+        <span class="contact-link-value">+91 88615 28148</span>
+      </div>
+    </a>
+    <a href="https://linkedin.com" target="_blank" class="contact-link">
+      <div class="contact-link-icon">in</div>
+      <div class="contact-link-info">
+        <span class="contact-link-label">LinkedIn</span>
+        <span class="contact-link-value">linkedin.com/in/lathesh-shetty</span>
+      </div>
+    </a>
+    <div class="contact-link" style="opacity:0.4; cursor:not-allowed;">
+      <div class="contact-link-icon">⌂</div>
+      <div class="contact-link-info">
+        <span class="contact-link-label">Location</span>
+        <span class="contact-link-value">Bengaluru, Karnataka, India</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span>Lathesh Shetty — VR Developer</span>
+  <span>Bengaluru, India · 2025</span>
+</footer>
+
+<script>
+  // Scroll reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.reveal, .timeline-item').forEach(el => {
+    observer.observe(el);
+  });
+
+  // Stagger timeline items
+  document.querySelectorAll('.timeline-item').forEach((item, i) => {
+    item.style.transitionDelay = `${i * 0.15}s`;
+  });
+</script>
+
+</body>
+</html>
